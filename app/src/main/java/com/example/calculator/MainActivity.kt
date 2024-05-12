@@ -5,10 +5,10 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
@@ -17,56 +17,121 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.calculator.ui.theme.CalculatorTheme
-
+import org.mariuszgromada.math.mxparser.*
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContent {
+
             CalculatorTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Column {
-                        Row {
-                            SingleButton(label = "AC")
-                            SingleButton(label = "+/-")
-                            SingleButton(label = "%")
-                            SingleButton(label = "/")
-                        }
-                        Row {
-                            SingleButton(label = "7")
-                            SingleButton(label = "8")
-                            SingleButton(label = "9")
-                            SingleButton(label = "x")
-                        }
-                        Row {
-                            SingleButton(label = "4")
-                            SingleButton(label = "5")
-                            SingleButton(label = "6")
-                            SingleButton(label = "-")
-                        }
-                        Row {
-                            SingleButton(label = "1")
-                            SingleButton(label = "2")
-                            SingleButton(label = "3")
-                            SingleButton(label = "+")
-                        }
-                        Row {
-                            SingleButton(label = "0", width = 200.dp)
-                            SingleButton(label = ",")
-                            SingleButton(label = "=")
-                        }
-                    }
+                    MainContent();
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun MainContent() {
+    var placeholder by remember {
+        mutableStateOf("");
+    }
+
+    fun evaluateExpression() {
+        val e : Expression = Expression(placeholder);
+        var result = e.calculate()
+
+        if (result % 1 == 0.0) {
+            placeholder = result.toInt().toString()
+        } else {
+            placeholder = result.toString()
+        }
+
+        placeholder = e.calculate().toString();
+    }
+
+    fun addNumberToPlaceholder(value: String) {
+        placeholder = placeholder + value;
+    }
+
+    fun addArtmeticSymbolToPlaceholder(value: String) {
+        var artmetics = arrayOf("/", "*", "+", "-");
+
+        if (placeholder == "") {
+            return
+        }
+
+        if (artmetics.contains(placeholder.last().toString())) {
+            placeholder = placeholder.dropLast(1) + value;
+        } else {
+            placeholder = placeholder + value;
+        }
+    }
+
+    fun getPlaceholder(): String {
+        if (placeholder == "") {
+            return "0";
+        } else {
+            return placeholder
+        }
+    }
+
+
+    Column {
+        Text(
+            text = getPlaceholder(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(250.dp)
+                .padding(10.dp),
+            fontSize = 30.sp
+
+        )
+        Row {
+            SingleButton(label = "AC")
+            SingleButton(label = "+/-")
+            SingleButton(label = "%")
+            SingleButton(label = "/", onClick = { addArtmeticSymbolToPlaceholder("/") })
+        }
+        Row {
+            SingleButton(label = "7", onClick = { addNumberToPlaceholder("7")})
+            SingleButton(label = "8", onClick = { addNumberToPlaceholder("8")})
+            SingleButton(label = "9", onClick = { addNumberToPlaceholder("9")})
+            SingleButton(label = "x", onClick = { addArtmeticSymbolToPlaceholder("*") })
+        }
+        Row {
+            SingleButton(label = "4", onClick = { addNumberToPlaceholder("4")})
+            SingleButton(label = "5", onClick = { addNumberToPlaceholder("5")})
+            SingleButton(label = "6", onClick = { addNumberToPlaceholder("6")})
+            SingleButton(label = "-", onClick = { addArtmeticSymbolToPlaceholder("-") })
+        }
+        Row {
+            SingleButton(label = "1", onClick = { addNumberToPlaceholder("1")})
+            SingleButton(label = "2", onClick = { addNumberToPlaceholder("2")})
+            SingleButton(label = "3", onClick = { addNumberToPlaceholder("3")})
+            SingleButton(label = "+", onClick = { addArtmeticSymbolToPlaceholder("+") })
+        }
+        Row {
+            SingleButton(label = "0", width = 200.dp)
+            SingleButton(label = ",")
+            SingleButton(label = "=", onClick = { evaluateExpression() })
         }
     }
 }
@@ -76,15 +141,18 @@ fun SingleButton(label: String, onClick: () -> Unit = {}, width: Dp = 100.dp) {
     Button (
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.White,
-            contentColor = Color.Blue
+            containerColor = Color.DarkGray,
+            contentColor = Color.White
         ),
         modifier = Modifier
             .width(width)
             .height(100.dp),
         shape = RoundedCornerShape(0.dp)
     ) {
-        Text(label)
+        Text(
+            text = label,
+            fontSize = 30.sp
+        )
     }
 }
 
