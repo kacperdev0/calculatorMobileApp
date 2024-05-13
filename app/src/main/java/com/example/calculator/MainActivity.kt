@@ -57,14 +57,7 @@ fun MainContent() {
     fun evaluateExpression() {
         val e : Expression = Expression(placeholder);
         var result = e.calculate()
-
-        if (result % 1 == 0.0) {
-            placeholder = result.toInt().toString()
-        } else {
-            placeholder = result.toString()
-        }
-
-        placeholder = e.calculate().toString();
+        placeholder = e.calculate().toString().removeSuffix(".0");
     }
 
     fun addNumberToPlaceholder(value: String) {
@@ -72,17 +65,11 @@ fun MainContent() {
     }
 
     fun addArtmeticSymbolToPlaceholder(value: String) {
-        var artmetics = arrayOf("/", "*", "+", "-");
+        var artmetics = setOf("/", "*", "+", "-");
 
-        if (placeholder == "") {
-            return
-        }
-
-        if (artmetics.contains(placeholder.last().toString())) {
-            placeholder = placeholder.dropLast(1) + value;
-        } else {
-            placeholder = placeholder + value;
-        }
+        if (placeholder == "") { return }
+        if (artmetics.contains(placeholder.last().toString())) { placeholder = placeholder.dropLast(1) + value }
+        else { placeholder = placeholder + value }
     }
 
     fun getPlaceholder(): String {
@@ -105,7 +92,7 @@ fun MainContent() {
 
         )
         Row {
-            SingleButton(label = "AC")
+            SingleButton(label = "AC", onClick = { placeholder = "" })
             SingleButton(label = "+/-")
             SingleButton(label = "%")
             SingleButton(label = "/", onClick = { addArtmeticSymbolToPlaceholder("/") })
