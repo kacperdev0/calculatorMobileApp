@@ -51,6 +51,9 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun MainContent() {
+
+    var artmetics = setOf("/", "*", "+", "-", ".")
+
     var placeholder by remember {
         mutableStateOf("");
     }
@@ -66,8 +69,6 @@ fun MainContent() {
     }
 
     fun addArtmeticSymbolToPlaceholder(value: String) {
-        var artmetics = setOf("/", "*", "+", "-", ".");
-
         if (placeholder == "") { return }
         if (artmetics.contains(placeholder.last().toString())) { placeholder = placeholder.dropLast(1) + value }
         else { placeholder = placeholder + value }
@@ -82,10 +83,16 @@ fun MainContent() {
     }
 
     fun addDecimalPart() {
-        var artmetics = setOf("/", "*", "+", "-", ".");
         val operands = placeholder.split(Regex("[+\\-*/]"))
         var lastNumber = operands.last().toString()
+
         if ("." !in lastNumber && lastNumber != "") { placeholder = placeholder + '.' }
+    }
+
+    fun addZeroToPlaceholder() {
+        if (placeholder != "" && !artmetics.contains(placeholder.last().toString())) {
+            placeholder = placeholder + "0"
+        }
     }
 
 
@@ -124,7 +131,7 @@ fun MainContent() {
             SingleButton(label = "+", onClick = { addArtmeticSymbolToPlaceholder("+") })
         }
         Row {
-            SingleButton(label = "0", width = 200.dp)
+            SingleButton(label = "0", onClick = { addZeroToPlaceholder() }, width = 200.dp)
             SingleButton(label = ",", onClick = { addDecimalPart() })
             SingleButton(label = "=", onClick = { evaluateExpression() })
         }
