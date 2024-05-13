@@ -1,6 +1,7 @@
 package com.example.calculator
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -65,7 +66,7 @@ fun MainContent() {
     }
 
     fun addArtmeticSymbolToPlaceholder(value: String) {
-        var artmetics = setOf("/", "*", "+", "-");
+        var artmetics = setOf("/", "*", "+", "-", ".");
 
         if (placeholder == "") { return }
         if (artmetics.contains(placeholder.last().toString())) { placeholder = placeholder.dropLast(1) + value }
@@ -78,6 +79,13 @@ fun MainContent() {
         } else {
             return placeholder
         }
+    }
+
+    fun addDecimalPart() {
+        var artmetics = setOf("/", "*", "+", "-", ".");
+        val operands = placeholder.split(Regex("[+\\-*/]"))
+        var lastNumber = operands.last().toString()
+        if ("." !in lastNumber && lastNumber != "") { placeholder = placeholder + '.' }
     }
 
 
@@ -93,7 +101,7 @@ fun MainContent() {
         )
         Row {
             SingleButton(label = "AC", onClick = { placeholder = "" })
-            SingleButton(label = "+/-")
+            SingleButton(label = "+/-", onClick = { placeholder = placeholder.split(Regex("[+-/*]")).toString() })
             SingleButton(label = "%")
             SingleButton(label = "/", onClick = { addArtmeticSymbolToPlaceholder("/") })
         }
@@ -117,7 +125,7 @@ fun MainContent() {
         }
         Row {
             SingleButton(label = "0", width = 200.dp)
-            SingleButton(label = ",")
+            SingleButton(label = ",", onClick = { addDecimalPart() })
             SingleButton(label = "=", onClick = { evaluateExpression() })
         }
     }
