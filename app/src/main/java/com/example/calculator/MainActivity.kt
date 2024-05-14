@@ -59,6 +59,10 @@ fun MainContent() {
     }
 
     fun evaluateExpression() {
+        if (artmetics.contains(placeholder.last().toString())) {
+            placeholder = placeholder.dropLast(1)
+        }
+
         val e : Expression = Expression(placeholder);
         var result = e.calculate()
         placeholder = e.calculate().toString().removeSuffix(".0");
