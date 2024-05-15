@@ -76,7 +76,7 @@ fun MainContent() {
         var lastChar = placeholder.last().toString()
         var penulimateChar = placeholder[placeholder.length-2].toString()
 
-        if (placeholder.isEmpty()) { return }
+        if (placeholder.isEmpty()) return
 
         if (artmetics.contains(lastChar))
         {
