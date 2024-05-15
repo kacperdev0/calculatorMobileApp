@@ -73,9 +73,29 @@ fun MainContent() {
     }
 
     fun addArtmeticSymbolToPlaceholder(value: String) {
-        if (placeholder == "") { return }
-        if (artmetics.contains(placeholder.last().toString())) { placeholder = placeholder.dropLast(1) + value }
-        else { placeholder = placeholder + value }
+        var lastChar = placeholder.last().toString()
+        var penulimateChar = placeholder[placeholder.length-2].toString()
+
+        if (placeholder.isEmpty()) { return }
+
+        if (artmetics.contains(lastChar))
+        {
+            if (lastChar in setOf(".","+","-")) {
+                if (penulimateChar in artmetics) {
+                    placeholder = placeholder.dropLast(2) + value
+                } else {
+                    placeholder = placeholder.dropLast(1) + value
+                }
+            } else {
+                if (value == "-") {
+                    placeholder = placeholder + value
+                }
+            }
+        }
+        else
+        {
+            placeholder = placeholder + value
+        }
     }
 
     fun getPlaceholder(): String {
