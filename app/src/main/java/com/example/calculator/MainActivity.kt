@@ -53,6 +53,7 @@ class MainActivity : ComponentActivity() {
 fun MainContent() {
 
     var artmetics = setOf("/", "*", "+", "-", ".")
+    var numbers = setOf("1","2","3","4","5","6","7","8","9","0")
 
     var placeholder by remember {
         mutableStateOf("");
@@ -132,6 +133,12 @@ fun MainContent() {
         }
     }
 
+    fun addPercentSymbol() {
+        if (placeholder.last().toString() in numbers) {
+            placeholder += "%"
+        }
+    }
+
 
     Column {
         Text(
@@ -146,7 +153,7 @@ fun MainContent() {
         Row {
             SingleButton(label = "AC", onClick = { placeholder = "" })
             SingleButton(label = "+/-", onClick = { handleSignChange() })
-            SingleButton(label = "%")
+            SingleButton(label = "%", onClick = { addPercentSymbol() })
             SingleButton(label = "/", onClick = { addArtmeticSymbolToPlaceholder("/") })
         }
         Row {
