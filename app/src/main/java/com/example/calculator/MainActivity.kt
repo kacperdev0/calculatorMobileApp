@@ -1,7 +1,6 @@
 package com.example.calculator
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
@@ -42,7 +41,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    MainContent();
+                    MainContent()
                 }
             }
         }
@@ -52,85 +51,85 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainContent() {
 
-    var artmetics = setOf("/", "*", "+", "-", ".")
-    var numbers = setOf("1","2","3","4","5","6","7","8","9","0")
+    val artmetics = setOf("/", "*", "+", "-", ".")
+    val numbers = setOf("1","2","3","4","5","6","7","8","9","0")
 
     var placeholder by remember {
-        mutableStateOf("");
+        mutableStateOf("")
     }
 
-    var themeColor: Color = Color(232, 135, 31)
+    val themeColor = Color(232, 135, 31)
 
     fun evaluateExpression() {
         if (artmetics.contains(placeholder.last().toString())) {
             placeholder = placeholder.dropLast(1)
         }
 
-        val e : Expression = Expression(placeholder);
-        placeholder = e.calculate().toString().removeSuffix(".0");
+        val e = Expression(placeholder)
+        placeholder = e.calculate().toString().removeSuffix(".0")
     }
 
     fun addNumberToPlaceholder(value: String) {
-        placeholder = placeholder + value;
+        placeholder += value
     }
 
     fun addArtmeticSymbolToPlaceholder(value: String) {
-        var lastChar = placeholder.last().toString()
-        var penulimateChar = placeholder[placeholder.length-2].toString()
+        val lastChar = placeholder.last().toString()
+        val penulimateChar = placeholder[placeholder.length-2].toString()
 
         if (placeholder.isEmpty()) return
 
         if (artmetics.contains(lastChar))
         {
             if (lastChar in setOf(".","+","-")) {
-                if (penulimateChar in artmetics) {
-                    placeholder = placeholder.dropLast(2) + value
+                placeholder = if (penulimateChar in artmetics) {
+                    placeholder.dropLast(2) + value
                 } else {
-                    placeholder = placeholder.dropLast(1) + value
+                    placeholder.dropLast(1) + value
                 }
             } else {
                 if (value == "-") {
-                    placeholder = placeholder + value
+                    placeholder += value
                 }
             }
         }
         else
         {
-            placeholder = placeholder + value
+            placeholder += value
         }
     }
 
     fun getPlaceholder(): String {
-        if (placeholder == "") {
-            return "0";
+        return if (placeholder == "") {
+            "0"
         } else {
-            return placeholder
+            placeholder
         }
     }
 
     fun addDecimalPart() {
         val operands = placeholder.split(Regex("[+\\-*/]"))
-        var lastNumber = operands.last().toString()
+        val lastNumber = operands.last().toString()
 
         if ("." !in lastNumber && lastNumber != "") {
-            placeholder = placeholder + '.'
+            placeholder += '.'
         }
     }
 
     fun addZeroToPlaceholder() {
-        var lastDigit = placeholder.last().toString()
+        val lastDigit = placeholder.last().toString()
         if (placeholder != "" && !artmetics.contains(lastDigit)) {
-            placeholder = placeholder + "0"
+            placeholder += "0"
         }
     }
 
     fun handleSignChange() {
         for (i in placeholder.length - 1 downTo 0) {
             if (placeholder[i].toString() in artmetics) {
-                if (placeholder[i-1].toString() in artmetics) {
-                    placeholder = placeholder.substring(0, i) + placeholder.substring(i+1, placeholder.length)
+                placeholder = if (placeholder[i-1].toString() in artmetics) {
+                    placeholder.substring(0, i) + placeholder.substring(i+1, placeholder.length)
                 } else {
-                    placeholder = placeholder.substring(0, i + 1) + "-" + placeholder.substring(i+1, placeholder.length)
+                    placeholder.substring(0, i + 1) + "-" + placeholder.substring(i+1, placeholder.length)
                 }
                 break
             }
@@ -138,7 +137,7 @@ fun MainContent() {
     }
 
     fun addPercentSymbol() {
-        var lastDidgit = placeholder.last().toString()
+        val lastDidgit = placeholder.last().toString()
 
         if (lastDidgit in numbers) {
             placeholder += "%"
@@ -157,43 +156,43 @@ fun MainContent() {
 
         )
         Row {
-            SingleButton(label = "AC", onClick = { placeholder = "" }, BgColor = themeColor)
-            SingleButton(label = "+/-", onClick = { handleSignChange() }, BgColor = themeColor)
-            SingleButton(label = "%", onClick = { addPercentSymbol() }, BgColor = themeColor)
-            SingleButton(label = "/", onClick = { addArtmeticSymbolToPlaceholder("/") }, BgColor = themeColor)
+            SingleButton(label = "AC", onClick = { placeholder = "" }, bgColor = themeColor)
+            SingleButton(label = "+/-", onClick = { handleSignChange() }, bgColor = themeColor)
+            SingleButton(label = "%", onClick = { addPercentSymbol() }, bgColor = themeColor)
+            SingleButton(label = "/", onClick = { addArtmeticSymbolToPlaceholder("/") }, bgColor = themeColor)
         }
         Row {
             SingleButton(label = "7", onClick = { addNumberToPlaceholder("7")})
             SingleButton(label = "8", onClick = { addNumberToPlaceholder("8")})
             SingleButton(label = "9", onClick = { addNumberToPlaceholder("9")})
-            SingleButton(label = "x", onClick = { addArtmeticSymbolToPlaceholder("*") }, BgColor = themeColor)
+            SingleButton(label = "x", onClick = { addArtmeticSymbolToPlaceholder("*") }, bgColor = themeColor)
         }
         Row {
             SingleButton(label = "4", onClick = { addNumberToPlaceholder("4")})
             SingleButton(label = "5", onClick = { addNumberToPlaceholder("5")})
             SingleButton(label = "6", onClick = { addNumberToPlaceholder("6")})
-            SingleButton(label = "-", onClick = { addArtmeticSymbolToPlaceholder("-") }, BgColor = themeColor)
+            SingleButton(label = "-", onClick = { addArtmeticSymbolToPlaceholder("-") }, bgColor = themeColor)
         }
         Row {
             SingleButton(label = "1", onClick = { addNumberToPlaceholder("1")})
             SingleButton(label = "2", onClick = { addNumberToPlaceholder("2")})
             SingleButton(label = "3", onClick = { addNumberToPlaceholder("3")})
-            SingleButton(label = "+", onClick = { addArtmeticSymbolToPlaceholder("+") }, BgColor = themeColor)
+            SingleButton(label = "+", onClick = { addArtmeticSymbolToPlaceholder("+") }, bgColor = themeColor)
         }
         Row {
             SingleButton(label = "0", onClick = { addZeroToPlaceholder() }, width = 200.dp)
             SingleButton(label = ",", onClick = { addDecimalPart() })
-            SingleButton(label = "=", onClick = { evaluateExpression() }, BgColor = themeColor)
+            SingleButton(label = "=", onClick = { evaluateExpression() }, bgColor = themeColor)
         }
     }
 }
 
 @Composable
-fun SingleButton(label: String, onClick: () -> Unit = {}, width: Dp = 100.dp, BgColor: Color = Color.DarkGray) {
+fun SingleButton(label: String, onClick: () -> Unit = {}, width: Dp = 100.dp, bgColor: Color = Color.DarkGray) {
     Button (
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = BgColor,
+            containerColor = bgColor,
             contentColor = Color.White
         ),
         modifier = Modifier
