@@ -119,6 +119,19 @@ fun MainContent() {
         }
     }
 
+    fun handleSignChange() {
+        for (i in placeholder.length - 1 downTo 0) {
+            if (placeholder[i].toString() in artmetics) {
+                if (placeholder[i-1].toString() in artmetics) {
+                    placeholder = placeholder.substring(0, i) + placeholder.substring(i+1, placeholder.length)
+                } else {
+                    placeholder = placeholder.substring(0, i + 1) + "-" + placeholder.substring(i+1, placeholder.length)
+                }
+                break
+            }
+        }
+    }
+
 
     Column {
         Text(
@@ -132,7 +145,7 @@ fun MainContent() {
         )
         Row {
             SingleButton(label = "AC", onClick = { placeholder = "" })
-            SingleButton(label = "+/-", onClick = { placeholder = placeholder.split(Regex("[+-/*]")).toString() })
+            SingleButton(label = "+/-", onClick = { handleSignChange() })
             SingleButton(label = "%")
             SingleButton(label = "/", onClick = { addArtmeticSymbolToPlaceholder("/") })
         }
