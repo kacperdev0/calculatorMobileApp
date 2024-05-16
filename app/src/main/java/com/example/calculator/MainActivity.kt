@@ -59,13 +59,14 @@ fun MainContent() {
         mutableStateOf("");
     }
 
+    var themeColor: Color = Color(232, 135, 31)
+
     fun evaluateExpression() {
         if (artmetics.contains(placeholder.last().toString())) {
             placeholder = placeholder.dropLast(1)
         }
 
         val e : Expression = Expression(placeholder);
-        var result = e.calculate()
         placeholder = e.calculate().toString().removeSuffix(".0");
     }
 
@@ -111,11 +112,14 @@ fun MainContent() {
         val operands = placeholder.split(Regex("[+\\-*/]"))
         var lastNumber = operands.last().toString()
 
-        if ("." !in lastNumber && lastNumber != "") { placeholder = placeholder + '.' }
+        if ("." !in lastNumber && lastNumber != "") {
+            placeholder = placeholder + '.'
+        }
     }
 
     fun addZeroToPlaceholder() {
-        if (placeholder != "" && !artmetics.contains(placeholder.last().toString())) {
+        var lastDigit = placeholder.last().toString()
+        if (placeholder != "" && !artmetics.contains(lastDigit)) {
             placeholder = placeholder + "0"
         }
     }
@@ -134,7 +138,9 @@ fun MainContent() {
     }
 
     fun addPercentSymbol() {
-        if (placeholder.last().toString() in numbers) {
+        var lastDidgit = placeholder.last().toString()
+
+        if (lastDidgit in numbers) {
             placeholder += "%"
         }
     }
@@ -151,43 +157,43 @@ fun MainContent() {
 
         )
         Row {
-            SingleButton(label = "AC", onClick = { placeholder = "" })
-            SingleButton(label = "+/-", onClick = { handleSignChange() })
-            SingleButton(label = "%", onClick = { addPercentSymbol() })
-            SingleButton(label = "/", onClick = { addArtmeticSymbolToPlaceholder("/") })
+            SingleButton(label = "AC", onClick = { placeholder = "" }, BgColor = themeColor)
+            SingleButton(label = "+/-", onClick = { handleSignChange() }, BgColor = themeColor)
+            SingleButton(label = "%", onClick = { addPercentSymbol() }, BgColor = themeColor)
+            SingleButton(label = "/", onClick = { addArtmeticSymbolToPlaceholder("/") }, BgColor = themeColor)
         }
         Row {
             SingleButton(label = "7", onClick = { addNumberToPlaceholder("7")})
             SingleButton(label = "8", onClick = { addNumberToPlaceholder("8")})
             SingleButton(label = "9", onClick = { addNumberToPlaceholder("9")})
-            SingleButton(label = "x", onClick = { addArtmeticSymbolToPlaceholder("*") })
+            SingleButton(label = "x", onClick = { addArtmeticSymbolToPlaceholder("*") }, BgColor = themeColor)
         }
         Row {
             SingleButton(label = "4", onClick = { addNumberToPlaceholder("4")})
             SingleButton(label = "5", onClick = { addNumberToPlaceholder("5")})
             SingleButton(label = "6", onClick = { addNumberToPlaceholder("6")})
-            SingleButton(label = "-", onClick = { addArtmeticSymbolToPlaceholder("-") })
+            SingleButton(label = "-", onClick = { addArtmeticSymbolToPlaceholder("-") }, BgColor = themeColor)
         }
         Row {
             SingleButton(label = "1", onClick = { addNumberToPlaceholder("1")})
             SingleButton(label = "2", onClick = { addNumberToPlaceholder("2")})
             SingleButton(label = "3", onClick = { addNumberToPlaceholder("3")})
-            SingleButton(label = "+", onClick = { addArtmeticSymbolToPlaceholder("+") })
+            SingleButton(label = "+", onClick = { addArtmeticSymbolToPlaceholder("+") }, BgColor = themeColor)
         }
         Row {
             SingleButton(label = "0", onClick = { addZeroToPlaceholder() }, width = 200.dp)
             SingleButton(label = ",", onClick = { addDecimalPart() })
-            SingleButton(label = "=", onClick = { evaluateExpression() })
+            SingleButton(label = "=", onClick = { evaluateExpression() }, BgColor = themeColor)
         }
     }
 }
 
 @Composable
-fun SingleButton(label: String, onClick: () -> Unit = {}, width: Dp = 100.dp) {
+fun SingleButton(label: String, onClick: () -> Unit = {}, width: Dp = 100.dp, BgColor: Color = Color.DarkGray) {
     Button (
         onClick = onClick,
         colors = ButtonDefaults.buttonColors(
-            containerColor = Color.DarkGray,
+            containerColor = BgColor,
             contentColor = Color.White
         ),
         modifier = Modifier
